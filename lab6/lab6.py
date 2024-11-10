@@ -4,6 +4,8 @@ import itertools
 
 s = Solver()
 
+cnf = []
+
 
 # индекс переменной x_ij
 # i, j = 1, 2, 3
@@ -28,6 +30,15 @@ def add_clause(vlist):
         else:
             raise ValueError("+ or - expected")
     s.add_clause(l)
+    cnf.append(l)
+
+
+def print_cnf(filename):
+    with open(filename, 'w') as fout:
+        print('p cnf', 18, len(cnf), file=fout)
+        for clause in cnf:
+            print(" ".join(list(map(str, clause))), file=fout)
+
 
 
 inds = range(1, 4)  # индексы клеток
@@ -90,6 +101,8 @@ for seq in itertools.product([0, 1, 2], repeat=dnf_len):
         clause.append(('X', i, j, '+'))
     add_clause(clause)
 
+
+print_cnf("cnf.txt")
 
 sat, solution = s.solve()
 #print(sat)
