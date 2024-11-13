@@ -37,7 +37,7 @@ def print_cnf(filename):
     with open(filename, 'w') as fout:
         print('p cnf', 18, len(cnf), file=fout)
         for clause in cnf:
-            print(" ".join(list(map(str, clause))), file=fout)
+            print(" ".join(list(map(str, clause)) + ['0']), file=fout)
 
 
 
@@ -70,6 +70,8 @@ for i in inds:
             add_clause([('X', i, j, '+')])
         elif field[i][j] == 'O':
             add_clause([('O', i, j, '+')])
+        elif field[i][j] != '.':
+            raise ValueError('Неизвестный символ')
 
 # 3. Ход X производится в одну клетку
 for i in inds:
