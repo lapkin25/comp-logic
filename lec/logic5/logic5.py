@@ -28,10 +28,22 @@ F7 = Impl(F2, F6)
 proof3 = Proof_RuleImplIntro([F1], F7, proof2)
 if not proof3.validate():
     print("Ошибка в доказательстве 3!")
-proof3.print()
+#proof3.print()
+#print('-' * 30)
+#print('Вывод из аксиом:')
+#proof3.print_inference()
+
+F8 = Impl(F1, F7)
+proof4 = Proof_RuleImplIntro([], F8, proof3)
+if not proof4.validate():
+    print("Ошибка в доказательстве 4!")
+proof4.print()
 print('-' * 30)
 print('Вывод из аксиом:')
-proof3.print_inference()
+proof4.print_inference()
+
+
+
 
 
 """
