@@ -24,6 +24,8 @@ class LinearProof(Proof):
         super().__init__(assumptions, conclusion)
         self.lines = []  # строки доказательства
         self.derived_formulas = assumptions.copy()  # список выведенных формул
+        self.derived_formulas_numbers = ['Г' + str(i + 1) for i, _ in enumerate(assumptions)]
+        self.derived_count = 0
     def find_derived(self, expr):
         """
         Вход: expr - формула, которую ищем в списке выведенных формул
@@ -44,18 +46,26 @@ class LinearProof(Proof):
                 raise Exception(f"Формула {formula} не выведена!")
         self.lines.append(rule)
         self.derived_formulas.append(rule.conclusion)
+        self.derived_count += 1
+        self.derived_formulas_numbers.append(str(self.derived_count))
     def validate(self):
         return self.find_derived(self.conclusion) != -1
-    def print(self, indentation=0, proof_num=1, parent_proof_num=None):
+    def print(self, indentation=0, proof_num=1):
         print(indentation * '  ', end='')
         print(f'(В{proof_num})', ', '.join(map(str, self.assumptions)), '⊢', self.conclusion)
         for i, line in enumerate(self.lines):
             #print(f'({proof_num}.{i + 1})')
             print((indentation + 1) * '  ', end='')
-            print(f'({i + 1})', line.conclusion, f'[{line.name}]')
-            # TODO: реализовать вывод номеров формул, из которых выводим
+            print(f'/{i + 1}/', line.conclusion, f'[{line.name} {self.premises_str(line)}]')
         print((indentation + 1) * '  ', end='')
         print(f'Вывод (В{proof_num}) построен')
+    def premises_str(self, rule):
+        formula_numbers = []
+        for formula in rule.premises:
+            formula_index = self.find_derived(formula)
+            formula_number = self.derived_formulas_numbers[formula_index]
+            formula_numbers.append(formula_number)
+        return ', '.join(formula_numbers)
 
 class RuleMP:
     def __init__(self, premise1, premise2, conclusion):
@@ -91,9 +101,9 @@ class Proof_RuleImplIntro(Proof):
         self.name = '→ вв'
     def validate(self):
         return self.subproof.validate()
-    def print(self, indentation=0, proof_num=1, parent_proof_num=None):
+    def print(self, indentation=0, proof_num=1):
         print(indentation * '  ', end='')
         print(f'(В{proof_num})', ', '.join(map(str, self.assumptions)), '⊢', self.conclusion)
-        self.subproof.print(indentation=indentation+1, proof_num=proof_num+1, parent_proof_num=proof_num)
+        self.subproof.print(indentation=indentation+1, proof_num=proof_num+1)
         print(indentation * '  ', end='')
         print(f'Вывод (В{proof_num}): [{self.name}] из (В{proof_num + 1})')
