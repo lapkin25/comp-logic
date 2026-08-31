@@ -19,7 +19,19 @@ F6 = parse('A -> C')
 proof2 = Proof_RuleImplIntro([F1, F2], F6, proof1)
 if not proof2.validate():
     print("Ошибка в доказательстве 2!")
-proof2.print()
+#proof2.print()
+#print('-' * 30)
+#print('Вывод из аксиом:')
+#proof2.print_inference()
+
+F7 = Impl(F2, F6)
+proof3 = Proof_RuleImplIntro([F1], F7, proof2)
+if not proof3.validate():
+    print("Ошибка в доказательстве 3!")
+proof3.print()
+print('-' * 30)
+print('Вывод из аксиом:')
+proof3.print_inference()
 
 
 """
